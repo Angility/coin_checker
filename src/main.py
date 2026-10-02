@@ -41,6 +41,15 @@ if __name__ == "__main__":
     while True:
         coin_data = api_client.fetch_prices([item["id"] for item in app_config['monitoring']['coins']])
         list_alerts = monitor.evaluate_alerts(coin_data, app_config['monitoring']['coins'], triggered_alerts)
-        print(f"[{datetime.now()}] - {list_alerts}")
+        
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
+        if list_alerts:  
+            print(f"[{timestamp}] 🚨 ALERTS TRIGGERED:")
+            for alert in list_alerts:
+                print(f"-> {alert}")
+        else:
+            print(f"[{timestamp}] ✅ No alerts. Prices are normal.")
+
         time.sleep(interval)
 
