@@ -1,0 +1,20 @@
+monitoring:
+  coins:
+    - id: "bitcoin"
+      tik: "BTC"
+      condition: "above" # Сигнал сработает если цена станет ВЫШЕ целевой
+      target_usd: 70000.00
+    - id: "ethereum"
+      tik: "ETH"
+      condition: "below" # Сигнал сработает если цена будет НИЖЕ целевой
+      target_usd: 3500.00
+
+ntfy:
+  server_url: "https://ntfy.sh"
+  topic: "ntfy_topic_name_here"
+
+security:
+  encryption_key: "encryption_key_here"
+
+settings:
+  check_interval_seconds: 30
