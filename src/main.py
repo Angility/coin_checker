@@ -62,7 +62,7 @@ if __name__ == "__main__":
                     print(f"[{timestamp}] 🚀 SUCCESS: [{alert}] was sended to ntfy!")
                     
                     if alert in unsended_alerts:
-                        unsended_alerts.remove[alert]
+                        unsended_alerts.remove(alert)
                 
                 else:
                     print(f"[{timestamp}] ⚠️ WARNING: [{alert}] was not sended to ntfy!")
