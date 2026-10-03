@@ -5,6 +5,9 @@ services:
     image: ghcr.io/angility/coin_checker:latest
     container_name: crypto-alerts-bot
     restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     volumes:
       - ./config/conf.yaml:/app/config/conf.yaml:ro
       - ./logs:/app/logs
