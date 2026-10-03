@@ -43,7 +43,9 @@ if __name__ == "__main__":
     topic = app_config['ntfy']['topic']
     token = app_config['ntfy']['token']
     unsended_alerts = []
-    print(f"[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] 🚩 SUCCESSFUL START")
+    start_message = f"[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] 🚩 SUCCESSFUL START"
+    print(start_message)
+    start_response = notifier.send_ntfy_notification(server_url,topic,token,start_message)
     
     while True:
         coin_data = api_client.fetch_prices([item["id"] for item in app_config['monitoring']['coins']])
