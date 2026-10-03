@@ -4,13 +4,14 @@ import sys
 import api_client
 import monitor
 import time
+import notifier
 from datetime import datetime
 
 # Загрузка настроек из файла конфигурации
 def load_config(config_path: str) -> dict:
 
     if not os.path.exists(config_path):
-        print(f"[!] ERROR: Config file not found at {config_path}")
+        print(f"❌ ERROR: Config file not found at {config_path}")
         sys.exit(1)
 
     with open(config_path, 'r', encoding='utf-8') as file:
@@ -18,7 +19,7 @@ def load_config(config_path: str) -> dict:
            config = yaml.safe_load(file)
            return config
         except yaml.YAMLError as exc:
-            print(f"[!] ERROR: Error occured while parsing YAML file: {exc}")
+            print(f"❌ ERROR: Error occured while parsing YAML file: {exc}")
             sys.exit(1)
 
 if __name__ == "__main__":
@@ -38,18 +39,36 @@ if __name__ == "__main__":
     print("---------------------")
     """
     interval = app_config['settings']['check_interval_seconds']
+    server_url = app_config['ntfy']['server_url']
+    topic = app_config['ntfy']['topic']
+    token = app_config['ntfy']['token']
+    unsended_alerts = []
+    print(f"[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] 🚩 SUCCESSFUL START")
+    
     while True:
         coin_data = api_client.fetch_prices([item["id"] for item in app_config['monitoring']['coins']])
         list_alerts = monitor.evaluate_alerts(coin_data, app_config['monitoring']['coins'], triggered_alerts)
-        
+        list_alerts.extend(unsended_alerts)
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
         if list_alerts:  
             print(f"[{timestamp}] 🚨 ALERTS TRIGGERED:")
             for alert in list_alerts:
+                
                 print(f"-> {alert}")
-        else:
-            print(f"[{timestamp}] ✅ No alerts. Prices are normal.")
+                response = notifier.send_ntfy_notification(server_url,topic,token,alert)
+                
+                if response:
+                    print(f"[{timestamp}] 🚀 SUCCESS: [{alert}] was sended to ntfy!")
+                    
+                    if alert in unsended_alerts:
+                        unsended_alerts.remove[alert]
+                
+                else:
+                    print(f"[{timestamp}] ⚠️ WARNING: [{alert}] was not sended to ntfy!")
+                    unsended_alerts.append(alert)
+        #else:
+            #print(f"[{timestamp}] 🛈 No alerts. Nothing to send.")
 
         time.sleep(interval)
 

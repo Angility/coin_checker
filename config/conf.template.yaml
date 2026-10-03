@@ -12,6 +12,7 @@ monitoring:
 ntfy:
   server_url: "https://ntfy.sh"
   topic: "ntfy_topic_name_here"
+  token: "tk_access_token_here"
 
 security:
   encryption_key: "encryption_key_here"
